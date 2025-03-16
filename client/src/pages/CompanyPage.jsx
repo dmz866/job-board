@@ -27,6 +27,10 @@ function CompanyPage() {
             <div className="box">
                 {company.description}
             </div>
+            <h2 className="title is-5">
+                Jobs:
+            </h2>
+            {company.jobs.map(j => (<li key={j.title}>{j.title}</li>))}
         </div>
     );
 }
