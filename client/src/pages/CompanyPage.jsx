@@ -4,19 +4,30 @@ import { getCompany } from '../lib/graphql/queries';
 
 function CompanyPage() {
     const { companyId } = useParams();
-    const [company, setCompany] = useState({});
+    const [state, setState] = useState({ company: undefined, loading: true, error: false });
     const getCompanyById = useCallback(async () => {
-        const result = await getCompany(companyId);
+        try {
+            const company = await getCompany(companyId);
 
-        setCompany(result);
+            setState({ company, loading: false, error: false });
+        }
+        catch (error) {
+            setState({ company: undefined, loading: false, error: true });
+        }
     }, [companyId]);
 
     useEffect(() => {
         getCompanyById(companyId);
     }, [companyId]);
 
-    if (!company) {
+    const { company, loading, error } = state;
+
+    if (loading) {
         return <div>Loading...</div>
+    }
+
+    if (error) {
+        return <div className='has-text-danger'>Data unavailable</div>
     }
 
     return (
