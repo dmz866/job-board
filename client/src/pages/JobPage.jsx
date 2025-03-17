@@ -6,10 +6,9 @@ import { getJob } from '../lib/graphql/queries';
 
 function JobPage() {
     const { jobId } = useParams();
-    const [job, setJob] = useState({});
+    const [job, setJob] = useState();
     const getJobById = useCallback(async () => {
-        const result = await getJob(jobId);
-
+        const result = await getJob(jobId);        
         setJob(result);
     }, [jobId]);
 
