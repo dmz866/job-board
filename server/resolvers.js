@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { getCompany } from './db/companies.js';
-import { getJob, getJobs, getJobsByCompanyId } from './db/jobs.js';
+import { createJob, getJob, getJobs, getJobsByCompanyId } from './db/jobs.js';
 
 export const resolvers = {
     Query: {
@@ -15,6 +15,9 @@ export const resolvers = {
         },
         job: (_root, { id }) => getJob(id),
         jobs: () => getJobs()
+    },
+    Mutation: {
+        createJob: (_root, { input: { title, description } }) => createJob({ companyId: 'FjcJCHJALA4i', title, description })
     },
     Job: {
         date: (job) => {
