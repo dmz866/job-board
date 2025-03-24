@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { getCompany } from './db/companies.js';
-import { createJob, getJob, getJobs, getJobsByCompanyId } from './db/jobs.js';
+import { createJob, deleteJob, getJob, getJobs, getJobsByCompanyId } from './db/jobs.js';
 
 export const resolvers = {
     Query: {
@@ -17,7 +17,14 @@ export const resolvers = {
         jobs: () => getJobs()
     },
     Mutation: {
-        createJob: (_root, { input: { title, description } }) => createJob({ companyId: 'FjcJCHJALA4i', title, description })
+        createJob: (_root, { input: { title, description } }, { auth }) => {
+            if (!auth) {
+                throw unauthorizedError('Missing Authentication');
+            }
+
+            createJob({ companyId: 'FjcJCHJALA4i', title, description });
+        },
+        deleteJob: (_root, { id }) => deleteJob(id)
     },
     Job: {
         date: (job) => {
@@ -33,4 +40,8 @@ export const resolvers = {
 
 function toISODate(date) {
     return date.slice(0, 'yyyy-mm-dd'.length);
+}
+
+function unauthorizedError(message) {
+    return new GraphQLError(message, { extensions: { code: 'UNAUTHORIZED' } });
 }

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { createJob } from '../lib/graphql/mutations';
+import { useNavigate } from 'react-router';
 
 function CreateJobPage() {
+    const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
 
@@ -9,7 +11,7 @@ function CreateJobPage() {
         event.preventDefault();
 
         const result = await createJob({ title, description });
-        console.log('should post a new job:', { title, description });
+        navigate(`/jobs/${result.id}`);
     };
 
     return (

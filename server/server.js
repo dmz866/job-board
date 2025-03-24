@@ -9,6 +9,12 @@ import { resolvers } from './resolvers.js';
 const PORT = 9000;
 const app = express();
 
+const getContext = ({ req }) => {
+    return {
+        auth: req.auth
+    };
+};
+
 app.use(cors(), express.json(), authMiddleware);
 app.post('/login', handleLogin);
 app.listen({ port: PORT }, () => {
@@ -20,5 +26,5 @@ const typeDefs = await readFile('./schema.graphql', 'utf8');
 const apolloServer = new ApolloServer({ typeDefs, resolvers });
 await apolloServer.start();
 
-app.use('/graphql', expressMiddleware(apolloServer));
+app.use('/graphql', expressMiddleware(apolloServer, { context: getContext() }));
 

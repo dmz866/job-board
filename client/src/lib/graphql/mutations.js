@@ -10,7 +10,7 @@ export async function createJob({ title, description }) {
         }
     }`;
 
-    const { job } = await client.request(mutation, { input: { title, description } });
+    const { createJob: job } = await client.request(mutation, { input: { title, description } });
 
     return job;
 }
