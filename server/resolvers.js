@@ -17,14 +17,26 @@ export const resolvers = {
         jobs: () => getJobs()
     },
     Mutation: {
-        createJob: (_root, { input: { title, description } }, { auth }) => {
-            if (!auth) {
+        createJob: (_root, { input: { title, description } }, { user }) => {
+            if (!user) {
                 throw unauthorizedError('Missing Authentication');
             }
 
-            createJob({ companyId: 'FjcJCHJALA4i', title, description });
+            createJob({ companyId: user.companyId, title, description });
         },
-        deleteJob: (_root, { id }) => deleteJob(id)
+        deleteJob: async (_root, { id }, { user }) => {
+            if (!user) {
+                throw unauthorizedError('Missing Authentication');
+            }
+
+            const job = await deleteJob(id, user.companyId);
+
+            if (!job) {
+                throw new GraphQLError(`No job ${id} found`, { extensions: { code: 'NOT_FOUND' } });
+            }
+
+            return job;
+        }
     },
     Job: {
         date: (job) => {
